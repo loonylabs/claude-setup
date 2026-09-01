@@ -91,6 +91,14 @@
   `text_delta`, so filtering on the latter alone reproduces the very silence this
   flag exists to fix. Forward the text so far rather than each fragment, and let the
   finished turn replace it.
+- **CLAUDE.md lands in the FIRST USER MESSAGE, not the system prompt** — documented,
+  and upstream closed the caching complaint as not planned (claude-code#47098). A
+  large one is therefore re-prefilled at every session start and every `/clear`; a
+  prefix cache in front of a local model never covers it. The way out, measured
+  2026-09-01 (80.7k-token cold starts fell to ~2k computed): rename the file and
+  start `claude --append-system-prompt-file <file>` — works interactively. The
+  inline `--append-system-prompt` variant cannot carry a large block on Windows:
+  cmd caps a line at 8,191 chars, CreateProcess at 32,767.
 
 ## Tools and runtime
 
@@ -134,7 +142,10 @@ the mistake this heading exists to prevent.
   page as Enter, `"Enter"` does. Screenshot without `scale` is a 1:1 crop of the
   top-left; `scale: 1` is the whole viewport shrunk; `zoom` unsupported — and any
   screenshot fails outright while the pane is hidden, so verify server-rendered pages
-  by fetching the HTML instead. *(volatile — tool behaviour)*
+  by fetching the HTML instead. `confirm()`/`alert()` dialogs are auto-dismissed,
+  confirm returning false (measured 2026-09-01) — a page path gated on one cannot be
+  exercised by automation; drive the underlying request instead.
+  *(volatile — tool behaviour)*
 - **`fetch` gives up on a slow local model server after 5 minutes.** undici's
   headersTimeout (300 s) is not settable through fetch options and surfaces as a bare
   `TypeError: fetch failed` / `UND_ERR_HEADERS_TIMEOUT` — indistinguishable from the
