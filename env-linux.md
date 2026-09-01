@@ -20,3 +20,10 @@ section of `CLAUDE.md` instead, not here.
   `ps -o lstart= -p <pid>` for the process, and the mtime of `env-local.md`, which the
   SessionStart hook rewrites on every start and which therefore doubles as a witness that
   a session really began.
+
+- **`systemctl show` of a unit systemd does not know FABRICATES success-shaped
+  answers**: `Result=success`, `ExecMainStatus=0`, `ActiveState=inactive` — measured
+  2026-09-01 on systemd 259 (user manager). A successful transient unit is collected
+  the moment it exits, so reading its verdict afterwards gets the fabricated answers,
+  not the real ones. Check `LoadState=loaded` before believing anything else, or run
+  the unit with `-p RemainAfterExit=yes` and read the verdict while it still exists.
