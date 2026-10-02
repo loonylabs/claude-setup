@@ -84,7 +84,26 @@
 - **`api_error_status` is present-and-null on success**, so `!== undefined` reads
   every successful run as a failure. Measured 2026-08-26: it silently replaced each
   run's own summary with `""`. Test a harness field for a *value*, never for presence
-  — and prefer `is_error`, which the same `result` object carries.
+  — and prefer `is_error`, which the same `result` object carries. **`subtype` is no
+  success test either:** an expired login returns `subtype: "success"` WITH
+  `is_error: true` and the result text `Failed to authenticate: OAuth session expired`
+  (measured 2026-10-02) — a reader that trusts `subtype` reads a dead CLI as an answer.
+- **The CLI and the desktop app log in separately.** The app kept working while
+  `~/.local/bin/claude` had been logged out for a week (OAuth expired, found 2026-10-02);
+  `claude auth status` (`loggedIn`) tells, `claude auth login` fixes it — the user's
+  step, not Claude's. The init line's `apiKeySource` reads `"none"` on the subscription,
+  logged in or not; any other value means an API key pays.
+- **`--safe-mode` still reads the user's `settings.json`.** It drops CLAUDE.md, hooks,
+  plugins and MCP and keeps the login — but `language: german` made a headless answer
+  German (measured 2026-10-02). `--setting-sources project` in a directory without a
+  project drops the user settings too; then `alwaysThinkingEnabled` and anything else
+  needed must be given explicitly (`--settings '{...}'`), or the run goes without it.
+- **Prompt cache across `-p` runs works** (measured 2026-10-02, Sonnet): a follow-up
+  through `--resume` read the whole prior context from the cache (5,343 tokens read,
+  89 written). A NEW session with an identical prompt re-used ~85 % and re-wrote ~750
+  tokens every time, reproducibly; `--exclude-dynamic-system-prompt-sections` did not
+  change that. Read `cache_read_input_tokens` per assistant message, not only the
+  result totals.
 - `--include-partial-messages` adds `stream_event` lines carrying
   `content_block_delta` — the answer while it is written, which fills a stage that
   otherwise sends nothing for minutes. **Most deltas are `thinking_delta`**, not
