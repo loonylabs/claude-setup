@@ -3,7 +3,7 @@
 These skills were copied unmodified from https://github.com/mattpocock/skills (commit a496f55):
 
 - grill-me, grilling (skills/productivity)
-- codebase-design, improve-codebase-architecture, to-tickets (skills/engineering)
+- codebase-design, improve-codebase-architecture, to-tickets, domain-modeling, setup-matt-pocock-skills (skills/engineering)
 
 Licence of the upstream repository (MIT):
 
