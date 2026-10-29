@@ -6,6 +6,8 @@
   "autoMemoryEnabled": false,
   "autoUpdatesChannel": "latest",
   "awaySummaryEnabled": false,
+  "disableArtifact": true,
+  "disableWorkflows": true,
   "enabledPlugins": {
     "greptile@claude-plugins-official": false,
     "supabase@claude-plugins-official": false,
@@ -43,6 +45,20 @@
   "permissions": {
     "allow": [
       "Read(~/.claude/**)"
+    ],
+    "deny": [
+      "NotebookEdit",
+      "EnterWorktree",
+      "ExitWorktree",
+      "RemoteTrigger",
+      "DesignSync",
+      "EnterPlanMode",
+      "ExitPlanMode",
+      "AskUserQuestion",
+      "TaskCreate",
+      "TaskUpdate",
+      "TaskList",
+      "TaskGet"
     ]
   },
   "preferredNotifChannel": "notifications_disabled",
@@ -64,6 +80,7 @@
     "type": "command",
     "command": "~/.claude/statusline-wrapper.cmd"
   },
+  "syncClaudeAiPlugins": false,
   "theme": "dark",
   "tui": "fullscreen",
   "voice": {
